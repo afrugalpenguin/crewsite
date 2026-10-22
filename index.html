@@ -34,15 +34,18 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
 /* Hero */
 .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--rule); background: var(--bg); }
 .hero .crest { position: absolute; inset: 0; z-index: 0; }
-.hero .crest img { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); height: 125%; max-width: none; opacity: .6; }
+.hero .crest img { position: absolute; left: clamp(0px, 7.5vw, 100px); top: 50%; transform: translateY(-50%); height: 125%; max-width: none; opacity: .6;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%); }
 .hero .fade { position: absolute; inset: 0; z-index: 1; background:
   radial-gradient(ellipse 50% 45% at 50% 50%, rgba(9,7,7,.4) 0%, rgba(9,7,7,.2) 45%, rgba(9,7,7,0) 100%),
   linear-gradient(0deg, var(--bg) 0%, rgba(9,7,7,0) 28%); }
 .hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
-.hero .inner { position: relative; z-index: 3; padding-block: clamp(72px, 12vw, 150px) clamp(64px, 9vw, 120px); max-width: 1100px; text-align: center; }
-.eyebrow { font-size: 12px; letter-spacing: .34em; text-transform: uppercase; color: var(--blood-2); margin-bottom: 18px; }
+.hero .inner { position: relative; z-index: 3; padding-block: clamp(144px, 24vw, 300px) clamp(64px, 9vw, 120px); max-width: 1100px; text-align: center; }
+.eyebrow { font-size: 15px; letter-spacing: .34em; text-transform: uppercase; color: var(--blood-2); margin-bottom: 18px; }
 .hero h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(72px, 14vw, 168px); line-height: .9; letter-spacing: .06em; color: var(--fg); text-shadow: 0 3px 0 #2a0c0c, 0 0 60px rgba(217,56,47,.22); }
-.hero p { max-width: 34ch; font-size: clamp(17px, 2vw, 21px); color: var(--fg-2); margin: 28px auto 0; }
+.hero p { max-width: 62ch; text-wrap: balance; font-size: clamp(17px, 2vw, 21px); color: var(--fg-2); margin: 28px auto 0; }
+.hero p span { display: block; }
 .cta { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 36px; }
 .btn { display: inline-block; padding: 13px 22px; font-size: 13px; letter-spacing: .22em; text-transform: uppercase; font-weight: 700; border: 1px solid var(--blood); color: var(--fg); background: transparent; transition: background .2s, box-shadow .2s, transform .1s; }
 .btn.primary { background: var(--blood); }
@@ -89,7 +92,7 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
   <div class="inner">
     <div class="eyebrow">For the Horde</div>
     <h1>CREW <br>Forever</h1>
-    <p>A long-standing Horde guild. Old friends, new adventures, same bad decisions in the raid.</p>
+    <p><span>A long-standing Horde guild.</span> <span>Old friends, new adventures, same bad decisions.</span></p>
   </div>
 </section>
 
