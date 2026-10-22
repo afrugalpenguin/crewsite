@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crew</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<style>
+/* Layout: centred full-bleed hero with the crest and a smoke canvas, then a two-stone band, then the creed. Dark-only by design. */
+:root {
+  --bg: #090707;
+  --bg-2: #120c0c;
+  --iron: #1d1515;
+  --rule: #3a1818;
+  --fg: #e9d9d2;
+  --fg-2: #b9a39b;
+  --fg-3: #7d6a64;
+  --blood: #a3221f;
+  --blood-2: #d9382f;
+  --ember: #ff7a2a;
+  --font-display: 'Cinzel', 'Times New Roman', Georgia, serif;
+  --font-body: 'Alegreya Sans', 'Segoe UI', system-ui, sans-serif;
+  color-scheme: dark;
+}
+html, body { background: var(--bg); color: var(--fg); font-family: var(--font-body); margin: 0; }
+body { font-size: 17px; line-height: 1.6; }
+* { box-sizing: border-box; }
+a { color: inherit; text-decoration: none; }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.inner { max-width: 1100px; margin: 0 auto; }
+h1, h2, h3 { text-wrap: balance; margin: 0; }
+
+/* Hero */
+.hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--rule); background: var(--bg); }
+.hero .crest { position: absolute; inset: 0; z-index: 0; }
+.hero .crest img { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); height: 125%; max-width: none; opacity: .6; }
+.hero .fade { position: absolute; inset: 0; z-index: 1; background:
+  radial-gradient(ellipse 50% 45% at 50% 50%, rgba(9,7,7,.4) 0%, rgba(9,7,7,.2) 45%, rgba(9,7,7,0) 100%),
+  linear-gradient(0deg, var(--bg) 0%, rgba(9,7,7,0) 28%); }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+.hero .inner { position: relative; z-index: 3; padding-block: clamp(72px, 12vw, 150px) clamp(64px, 9vw, 120px); max-width: 1100px; text-align: center; }
+.eyebrow { font-size: 12px; letter-spacing: .34em; text-transform: uppercase; color: var(--blood-2); margin-bottom: 18px; }
+.hero h1 { font-family: var(--font-display); font-weight: 900; font-size: clamp(72px, 14vw, 168px); line-height: .9; letter-spacing: .06em; color: var(--fg); text-shadow: 0 3px 0 #2a0c0c, 0 0 60px rgba(217,56,47,.22); }
+.hero p { max-width: 34ch; font-size: clamp(17px, 2vw, 21px); color: var(--fg-2); margin: 28px auto 0; }
+.cta { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 36px; }
+.btn { display: inline-block; padding: 13px 22px; font-size: 13px; letter-spacing: .22em; text-transform: uppercase; font-weight: 700; border: 1px solid var(--blood); color: var(--fg); background: transparent; transition: background .2s, box-shadow .2s, transform .1s; }
+.btn.primary { background: var(--blood); }
+.btn:hover, .btn:focus-visible { background: var(--blood-2); border-color: var(--blood-2); box-shadow: 0 0 28px rgba(217,56,47,.45); outline: none; }
+.btn:active { transform: translateY(1px); }
+
+/* Stones */
+.stones { border-bottom: 1px solid var(--rule); background: var(--bg-2); }
+.stones .inner { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; }
+.stone { padding: 34px 28px 36px; border-right: 1px solid var(--rule); min-width: 0; position: relative; text-align: center; transition: background .25s; }
+.stone:last-child { border-right: 0; }
+.stone:hover { background: var(--iron); }
+.stone::after { content: ""; position: absolute; left: 28px; right: 28px; bottom: 0; height: 2px; background: var(--blood-2); transform: scaleX(0); transform-origin: center; transition: transform .3s; }
+.stone:hover::after { transform: scaleX(1); }
+.stone .label { font-size: 12px; letter-spacing: .3em; text-transform: uppercase; color: var(--blood-2); margin-bottom: 10px; }
+.stone h2 { font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1; color: var(--fg); }
+.stone p { margin: 10px 0 0; color: var(--fg-2); font-size: 16px; }
+.stone .sub { color: var(--fg-3); font-size: 14px; margin-top: 4px; }
+
+/* Creed */
+.creed .inner { padding-block: 72px 80px; max-width: 760px; text-align: center; }
+.creed h2 { font-family: var(--font-display); font-weight: 700; font-size: clamp(26px, 4vw, 40px); line-height: 1.05; color: var(--fg); }
+.creed p { color: var(--fg-2); margin: 20px auto 0; max-width: 62ch; }
+.creed em { color: var(--fg); font-style: italic; }
+
+@media (max-width: 760px) {
+  .stones .inner { grid-template-columns: 1fr; }
+  .stone { border-right: 0; border-bottom: 1px solid var(--rule); }
+  .stone:last-child { border-bottom: 0; }
+  .hero .crest img { height: 100%; opacity: .45; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero canvas { display: none; }
+  .btn, .stone, .stone::after { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<section class="hero gutter">
+  <div class="crest" aria-hidden="true"><img src="crest.png" alt=""></div>
+  <div class="fade" aria-hidden="true"></div>
+  <canvas id="smoke" aria-hidden="true"></canvas>
+  <div class="inner">
+    <div class="eyebrow">For the Horde</div>
+    <h1>CREW <br>Forever</h1>
+    <p>A long-standing Horde guild. Old friends, new adventures, same bad decisions in the raid.</p>
+  </div>
+</section>
+
+<section class="stones gutter">
+  <div class="inner">
+    <div class="stone" id="raids">
+      <div class="label">Raids</div>
+      <h2>Raid nights</h2>
+      <p>Times to be announced.</p>
+      <div class="sub">Check Discord for the current schedule</div>
+    </div>
+    <div class="stone" id="join">
+      <div class="label">Join</div>
+      <h2>Come find us</h2>
+      <p>All classes, all roles. Bring your own tusks.</p>
+      <a class="btn primary" href="https://discord.gg/zVEJ8Ub5x8" target="_blank" rel="noopener">Join our Discord</a>
+    </div>
+  </div>
+</section>
+
+<section class="creed gutter" id="creed">
+  <div class="inner">
+    <h2>Same crew. Different decade.</h2>
+    <p>We have outlasted expansions, server merges, at east one guild bank incident nobody talks about, and THAT dick pic.
+  </div>
+</section>
+
+<script>
+(function () {
+  var c = document.getElementById('smoke');
+  if (!c || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var ctx = c.getContext('2d');
+  var hero = c.parentElement;
+  var W = 0, H = 0, dpr = 1;
+  var puffs = [], embers = [];
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = hero.clientWidth; H = hero.clientHeight;
+    c.width = W * dpr; c.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function rand(a, b) { return a + Math.random() * (b - a); }
+
+  function Puff() {
+    this.reset(true);
+  }
+  Puff.prototype.reset = function (initial) {
+    this.x = rand(W * 0.35, W * 1.05);
+    this.y = initial ? rand(0, H) : H + rand(40, 160);
+    this.r = rand(60, 180);
+    this.vx = rand(-0.12, 0.12);
+    this.vy = rand(-0.22, -0.5);
+    this.life = initial ? rand(0, 1) : 0;
+    this.speed = rand(0.0015, 0.003);
+    this.wobble = rand(0, Math.PI * 2);
+    this.hue = Math.random() < 0.7 ? 'rgba(90,22,18,' : 'rgba(40,30,30,';
+    this.max = rand(0.10, 0.22);
+  };
+  Puff.prototype.step = function () {
+    this.life += this.speed;
+    this.wobble += 0.01;
+    this.x += this.vx + Math.sin(this.wobble) * 0.25;
+    this.y += this.vy;
+    if (this.life >= 1 || this.y < -this.r * 1.5) this.reset(false);
+  };
+  Puff.prototype.draw = function () {
+    var a = Math.sin(this.life * Math.PI) * this.max;
+    var g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.r);
+    g.addColorStop(0, this.hue + a + ')');
+    g.addColorStop(1, this.hue + '0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill();
+  };
+
+  function Ember() { this.reset(true); }
+  Ember.prototype.reset = function (initial) {
+    this.x = rand(W * 0.3, W);
+    this.y = initial ? rand(0, H) : H + rand(10, 60);
+    this.r = rand(1.2, 3.2);
+    this.vy = rand(-0.35, -0.9);
+    this.vx = rand(-0.15, 0.15);
+    this.wobble = rand(0, Math.PI * 2);
+    this.flick = rand(0.02, 0.06);
+    this.a = rand(0.4, 1);
+    this.rgb = Math.random() < 0.5 ? '255,122,42' : '255,170,70';
+  };
+  Ember.prototype.step = function () {
+    this.wobble += this.flick;
+    this.x += this.vx + Math.sin(this.wobble) * 0.3;
+    this.y += this.vy;
+    this.a -= 0.001;
+    if (this.y < -10 || this.a <= 0) this.reset(false);
+  };
+  Ember.prototype.draw = function () {
+    var a = this.a * (0.6 + 0.4 * Math.sin(this.wobble * 3));
+    var gr = this.r * 3;
+    var g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, gr);
+    g.addColorStop(0, 'rgba(' + this.rgb + ',' + (a * 0.35) + ')');
+    g.addColorStop(1, 'rgba(' + this.rgb + ',0)');
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(this.x, this.y, gr, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgba(' + this.rgb + ',' + a + ')';
+    ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill();
+  };
+
+  var puffCount = W < 760 ? 10 : 18;
+  var emberCount = W < 760 ? 35 : 90;
+  for (var i = 0; i < puffCount; i++) puffs.push(new Puff());
+  for (var j = 0; j < emberCount; j++) embers.push(new Ember());
+
+  var running = true;
+  document.addEventListener('visibilitychange', function () { running = !document.hidden; if (running) frame(); });
+
+  function frame() {
+    if (!running) return;
+    ctx.clearRect(0, 0, W, H);
+    ctx.globalCompositeOperation = 'lighter';
+    for (var i = 0; i < puffs.length; i++) { puffs[i].step(); puffs[i].draw(); }
+    for (var j = 0; j < embers.length; j++) { embers[j].step(); embers[j].draw(); }
+    ctx.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+</script>
+</body>
+</html>
