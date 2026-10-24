@@ -52,6 +52,34 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
 .btn:hover, .btn:focus-visible { background: var(--blood-2); border-color: var(--blood-2); box-shadow: 0 0 28px rgba(217,56,47,.45); outline: none; }
 .btn:active { transform: translateY(1px); }
 
+/* Gallery strip: duplicated track, JS drifts/drags it and wraps at half its width for a seamless loop. Five thumbs per screen. */
+.gallery { border-bottom: 1px solid var(--rule); padding-block: 36px 40px; overflow: hidden; }
+.gallery .label { font-size: 12px; letter-spacing: .3em; text-transform: uppercase; color: var(--blood-2); text-align: center; margin-bottom: 20px; }
+.strip { container-type: inline-size; cursor: grab; touch-action: pan-y; user-select: none; -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+.strip.dragging, .strip.dragging .thumb { cursor: grabbing; }
+.track { display: flex; gap: 14px; width: max-content; will-change: transform; }
+.thumb { flex: none; width: calc((100cqw - 56px) / 5); aspect-ratio: 16 / 9; padding: 0; border: 1px solid var(--rule); background: var(--iron); cursor: zoom-in; overflow: hidden; transition: border-color .2s, box-shadow .2s, transform .2s; }
+.thumb img { display: block; width: 100%; height: 100%; object-fit: cover; filter: saturate(.8) brightness(.85); transition: filter .25s, transform .4s; }
+.thumb:hover, .thumb:focus-visible { border-color: var(--blood-2); box-shadow: 0 0 24px rgba(217,56,47,.4); transform: translateY(-3px); outline: none; }
+.thumb:hover img, .thumb:focus-visible img { filter: none; transform: scale(1.05); }
+
+/* Lightbox: frame is 90% of the viewport (16:9). Transitions burn the next image in through the canvas, see burn(). */
+.lb { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: rgba(5,3,3,.94); color: var(--fg); overflow: hidden; }
+.lb[open] { display: flex; align-items: center; justify-content: center; animation: lb-in .25s ease-out; }
+.lb::backdrop { background: transparent; }
+@keyframes lb-in { from { opacity: 0; } }
+.lb-frame { position: relative; width: min(90vw, 160vh); aspect-ratio: 16 / 9; }
+.lb-stage { position: absolute; inset: 0; z-index: 0; overflow: hidden; background: #000; border: 1px solid var(--rule); box-shadow: 0 0 80px rgba(163,34,31,.25); touch-action: pan-y; }
+.lb-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.lb-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.lb-cap { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; gap: 12px; padding: 28px 18px 12px; font-size: 14px; letter-spacing: .18em; text-transform: uppercase; color: var(--fg-2); background: linear-gradient(0deg, rgba(0,0,0,.75), transparent); pointer-events: none; }
+.lb-btn, .lb-close { position: absolute; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; border: 1px solid var(--rule); background: rgba(9,7,7,.7); color: var(--fg); font: 700 26px/1 var(--font-display); cursor: pointer; transition: background .2s, border-color .2s, box-shadow .2s; }
+.lb-btn { top: 50%; transform: translateY(-50%); }
+.lb-prev { left: 12px; }
+.lb-next { right: 12px; }
+.lb-close { top: 14px; right: 14px; z-index: 1; }
+.lb-btn:hover, .lb-btn:focus-visible, .lb-close:hover, .lb-close:focus-visible { background: var(--blood); border-color: var(--blood-2); box-shadow: 0 0 24px rgba(217,56,47,.45); outline: none; }
+
 /* Stones */
 .stones { border-bottom: 1px solid var(--rule); background: var(--bg-2); }
 .stones .inner { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; }
@@ -71,15 +99,27 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
 .creed p { color: var(--fg-2); margin: 20px auto 0; max-width: 62ch; }
 .creed em { color: var(--fg); font-style: italic; }
 
+/* Desktop: the stones band (fill + top/bottom rules) fades to nothing one gallery thumbnail width, (100% - 4 gaps) / 5, from each edge. Text is untouched. */
+@media (min-width: 761px) {
+  .gallery { border-bottom: 0; }
+  .stones { position: relative; isolation: isolate; background: none; border-bottom: 0; }
+  .stones::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--bg-2); border-block: 1px solid var(--rule);
+    -webkit-mask-image: linear-gradient(90deg, transparent calc((100% - 56px) / 5), #000 calc((100% - 56px) / 5 + 200px), #000 calc(100% - (100% - 56px) / 5 - 200px), transparent calc(100% - (100% - 56px) / 5));
+    mask-image: linear-gradient(90deg, transparent calc((100% - 56px) / 5), #000 calc((100% - 56px) / 5 + 200px), #000 calc(100% - (100% - 56px) / 5 - 200px), transparent calc(100% - (100% - 56px) / 5)); }
+}
 @media (max-width: 760px) {
   .stones .inner { grid-template-columns: 1fr; }
   .stone { border-right: 0; border-bottom: 1px solid var(--rule); }
   .stone:last-child { border-bottom: 0; }
   .hero .crest img { height: 100%; opacity: .45; }
+  .thumb { width: calc((100cqw - 14px) / 2); }
+  .lb-btn { width: 40px; height: 40px; font-size: 22px; }
+  .lb-cap { font-size: 12px; padding: 20px 12px 8px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero canvas { display: none; }
-  .btn, .stone, .stone::after { transition: none; }
+  .btn, .stone, .stone::after, .thumb, .thumb img { transition: none; }
+  .lb[open] { animation: none; }
 }
 </style>
 </head>
@@ -95,6 +135,24 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
     <p><span>A long-standing Horde guild.</span> <span>Old friends, new adventures, same bad decisions.</span></p>
   </div>
 </section>
+
+<section class="gallery" aria-label="Screenshot gallery">
+  <div class="label">From the archives</div>
+  <div class="strip"><div class="track" id="track"></div></div>
+</section>
+
+<dialog class="lb" id="lb" aria-label="Screenshot viewer">
+  <button class="lb-close" type="button" aria-label="Close">&times;</button>
+  <div class="lb-frame">
+    <div class="lb-stage">
+      <img alt=""><img alt="">
+      <canvas aria-hidden="true"></canvas>
+      <div class="lb-cap"><span class="lb-date"></span><span class="lb-count"></span></div>
+    </div>
+    <button class="lb-btn lb-prev" type="button" aria-label="Previous screenshot">&lsaquo;</button>
+    <button class="lb-btn lb-next" type="button" aria-label="Next screenshot">&rsaquo;</button>
+  </div>
+</dialog>
 
 <section class="stones gutter">
   <div class="inner">
@@ -116,7 +174,7 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
 <section class="creed gutter" id="creed">
   <div class="inner">
     <h2>Same crew. Different decade.</h2>
-    <p>We have outlasted expansions, server merges, at east one guild bank incident nobody talks about, and THAT dick pic.
+    <p>We have outlasted expansions, server merges, at least one guild bank incident nobody talks about, and THAT dick pic.
   </div>
 </section>
 
@@ -220,6 +278,281 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
     requestAnimationFrame(frame);
   }
   frame();
+})();
+
+(function () {
+  // Add new screenshots here (thumbnail: gallery/thumbs/<name>.jpg, 480x270).
+  var shots = [
+    'WoWScrnShot_022720_210223.jpg', 'WoWScrnShot_032220_205031.jpg', 'WoWScrnShot_052420_220736.jpg',
+    'WoWScrnShot_090620_225934.jpg', 'WoWScrnShot_092720_210401.jpg', 'WoWScrnShot_070421_211340.jpg',
+    'WoWScrnShot_071821_223513.jpg', 'WoWScrnShot_110321_220831.jpg', 'WoWScrnShot_111021_231757.jpg',
+    'WoWScrnShot_013022_221258.jpg', 'WoWScrnShot_021322_231007.jpg', 'WoWScrnShot_061222_225222.jpg',
+    'image.png'
+  ];
+  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function dateOf(name) {
+    var m = /_(\d\d)(\d\d)(\d\d)_/.exec(name);
+    return m ? (+m[2]) + ' ' + MONTHS[+m[1] - 1] + ' 20' + m[3] : '';
+  }
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var track = document.getElementById('track');
+  var lb = document.getElementById('lb');
+  var stage = lb.querySelector('.lb-stage');
+  var layers = stage.querySelectorAll('img');
+  layers = [layers[0], layers[1]];
+  var fx = stage.querySelector('canvas');
+  var ctx = fx.getContext('2d');
+  var dateEl = lb.querySelector('.lb-date');
+  var countEl = lb.querySelector('.lb-count');
+  var HIDDEN = 'polygon(0 0, 0 0, 0 0)';
+  var index = 0, busy = false, opener = null;
+
+  // Two copies of the set so the -50% drift loops seamlessly; the copy is hidden from AT and tab order.
+  for (var pass = 0; pass < 2; pass++) {
+    shots.forEach(function (name, i) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'thumb';
+      var img = document.createElement('img');
+      img.src = 'gallery/thumbs/' + name.replace(/\.\w+$/, '.jpg');
+      img.alt = 'Guild screenshot' + (dateOf(name) ? ', ' + dateOf(name) : '');
+      img.loading = 'lazy';
+      img.draggable = false;
+      b.appendChild(img);
+      if (pass) { b.tabIndex = -1; b.setAttribute('aria-hidden', 'true'); }
+      b.addEventListener('click', function () { open(i, b); });
+      track.appendChild(b);
+    });
+  }
+
+  // Drift + drag: offset is how far the track has scrolled left, wrapped to one copy's width.
+  var strip = track.parentElement;
+  var DRIFT = 40, offset = 0, vel = 0, hovering = false, drag = null, dragged = false, resumeAt = 0, last = performance.now();
+  function loop(now) {
+    var dt = Math.min(now - last, 50) / 1000;
+    last = now;
+    if (!drag) {
+      if (Math.abs(vel) > 5) { offset += vel * dt; vel *= Math.pow(0.04, dt); }
+      else if (!reduced && !hovering && now >= resumeAt && !strip.querySelector(':focus-visible')) { vel = 0; offset += DRIFT * dt; }
+    }
+    var period = (track.scrollWidth + 14) / 2;
+    offset = ((offset % period) + period) % period;
+    track.style.transform = 'translateX(' + -offset + 'px)';
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  strip.addEventListener('pointerenter', function (ev) { if (ev.pointerType === 'mouse' && !drag) hovering = true; });
+  strip.addEventListener('pointerleave', function (ev) { if (ev.pointerType === 'mouse') hovering = false; });
+  strip.addEventListener('pointerdown', function (ev) {
+    if (ev.button !== 0) return;
+    drag = { x: ev.clientX, start: offset, lastX: ev.clientX, lastT: ev.timeStamp, id: ev.pointerId };
+    dragged = false; vel = 0;
+  });
+  strip.addEventListener('pointermove', function (ev) {
+    if (!drag || ev.pointerId !== drag.id) return;
+    var dx = ev.clientX - drag.x;
+    // Only capture once it's clearly a drag, so a plain click still reaches the thumb.
+    if (!dragged && Math.abs(dx) > 5) { dragged = true; strip.setPointerCapture(ev.pointerId); strip.classList.add('dragging'); }
+    if (!dragged) return;
+    offset = drag.start - dx;
+    var dt = Math.max(ev.timeStamp - drag.lastT, 1) / 1000;
+    vel = 0.7 * vel + 0.3 * (-(ev.clientX - drag.lastX) / dt);
+    drag.lastX = ev.clientX; drag.lastT = ev.timeStamp;
+  });
+  function endDrag(ev) {
+    if (!drag || ev.pointerId !== drag.id) return;
+    if (ev.timeStamp - drag.lastT > 80) vel = 0;
+    // After a real drag, ignore hover and drift again 2s after release.
+    if (dragged) { hovering = false; resumeAt = performance.now() + 2000; }
+    drag = null;
+    strip.classList.remove('dragging');
+  }
+  strip.addEventListener('pointerup', endDrag);
+  strip.addEventListener('pointercancel', endDrag);
+  strip.addEventListener('click', function (ev) {
+    if (dragged) { ev.stopPropagation(); ev.preventDefault(); dragged = false; }
+  }, true);
+
+  function caption() {
+    dateEl.textContent = dateOf(shots[index]);
+    countEl.textContent = (index + 1) + ' / ' + shots.length;
+  }
+
+  function open(i, from) {
+    index = i; opener = from;
+    layers[0].src = 'gallery/' + shots[i];
+    layers[0].alt = from.firstChild.alt;
+    layers[0].style.clipPath = 'none'; layers[0].style.zIndex = 0;
+    layers[1].style.clipPath = HIDDEN; layers[1].style.zIndex = 1;
+    caption();
+    document.documentElement.style.overflow = 'hidden';
+    lb.showModal();
+  }
+  lb.addEventListener('close', function () {
+    document.documentElement.style.overflow = '';
+    if (opener) opener.focus();
+  });
+
+  function go(step) {
+    if (busy) return;
+    index = (index + step + shots.length) % shots.length;
+    var incoming = layers[1];
+    incoming.src = 'gallery/' + shots[index];
+    incoming.alt = 'Guild screenshot' + (dateOf(shots[index]) ? ', ' + dateOf(shots[index]) : '');
+    caption();
+    busy = true;
+    var ready = incoming.decode ? incoming.decode() : Promise.resolve();
+    ready.catch(function () {}).then(function () {
+      if (reduced) { finish(); return; }
+      burn();
+    });
+  }
+
+  // Incoming layer becomes the base; the old base is parked hidden on top for next time.
+  function finish() {
+    var incoming = layers[1], old = layers[0];
+    incoming.style.clipPath = 'none'; incoming.style.zIndex = 0;
+    old.style.clipPath = HIDDEN; old.style.zIndex = 1;
+    layers = [incoming, old];
+    busy = false;
+  }
+
+  // Burn: a noisy burn front spreads from a random ember. Behind the front the incoming image is drawn on the canvas;
+  // just ahead of it a glowing edge and a charred rim are painted over the old image. Fields are built on a small grid and scaled up.
+  var DUR = 1500, GW = 192, GH = 108, sparks = [], fxRunning = false;
+  function layer() {
+    var c = document.createElement('canvas');
+    c.width = GW; c.height = GH;
+    var x = c.getContext('2d');
+    return { c: c, x: x, img: x.createImageData(GW, GH) };
+  }
+  var mask = layer(), charred = layer(), glow = layer();
+
+  // 0 at the ember, 1 at the last point to burn: distance warped by three octaves of value noise.
+  function burnField() {
+    var F = new Float32Array(GW * GH);
+    var ox = 0.25 + Math.random() * 0.5, oy = 0.3 + Math.random() * 0.4;
+    var octaves = [[5, 0.45], [11, 0.3], [27, 0.25]].map(function (o) {
+      var cols = o[0] + 2, rows = Math.ceil(o[0] * 9 / 16) + 2, v = new Float32Array(cols * rows);
+      for (var i = 0; i < v.length; i++) v[i] = Math.random();
+      return { s: o[0], w: o[1], cols: cols, v: v };
+    });
+    var min = Infinity, max = -Infinity;
+    for (var y = 0; y < GH; y++) {
+      for (var x = 0; x < GW; x++) {
+        var u = x / GW, w = y / GH, n = 0;
+        for (var k = 0; k < 3; k++) {
+          var o = octaves[k], gx = u * o.s, gy = w * o.s * 9 / 16, ix = gx | 0, iy = gy | 0;
+          var tx = gx - ix, ty = gy - iy;
+          tx = tx * tx * (3 - 2 * tx); ty = ty * ty * (3 - 2 * ty);
+          var a = o.v[iy * o.cols + ix], b = o.v[iy * o.cols + ix + 1], c = o.v[(iy + 1) * o.cols + ix], d = o.v[(iy + 1) * o.cols + ix + 1];
+          n += o.w * (a + (b - a) * tx + (c - a) * ty + (a - b - c + d) * tx * ty);
+        }
+        var f = Math.hypot((u - ox) * 16 / 9, w - oy) + n * 0.9;
+        F[y * GW + x] = f;
+        if (f < min) min = f;
+        if (f > max) max = f;
+      }
+    }
+    for (var i = 0; i < F.length; i++) F[i] = (F[i] - min) / (max - min);
+    return F;
+  }
+
+  function burn() {
+    var sr = stage.getBoundingClientRect();
+    var W = sr.width, H = sr.height;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    fx.width = W * dpr; fx.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.imageSmoothingQuality = 'high';
+    var incoming = layers[1];
+    var scale = Math.min(W / incoming.naturalWidth, H / incoming.naturalHeight);
+    var dw = incoming.naturalWidth * scale, dh = incoming.naturalHeight * scale;
+    var F = burnField();
+    var t0 = performance.now();
+
+    function frame(now) {
+      var p = Math.min((now - t0) / DUR, 1);
+      var T = -0.04 + 1.12 * Math.pow(p, 1.4);
+      var m = mask.img.data, ch = charred.img.data, gl = glow.img.data, edge = [];
+      for (var i = 0, j = 0; i < F.length; i++, j += 4) {
+        var d = F[i] - T;
+        m[j + 3] = d < 0 ? Math.min(-d / 0.012, 1) * 255 : 0;
+        ch[j] = 22; ch[j + 1] = 9; ch[j + 2] = 4;
+        ch[j + 3] = d > 0 && d < 0.08 ? (1 - d / 0.08) * 230 : 0;
+        var k = d > -0.02 && d < 0.035 ? 1 - Math.abs(d - 0.005) / 0.03 : 0;
+        if (k > 0) {
+          var hot = Math.max(0, 1 - Math.abs(d) / 0.015);
+          gl[j] = 255; gl[j + 1] = 90 + hot * 140; gl[j + 2] = 20 + hot * 120; gl[j + 3] = Math.min(k, 1) * 255;
+          if (Math.abs(d) < 0.008) edge.push(i);
+        } else gl[j + 3] = 0;
+      }
+      mask.x.putImageData(mask.img, 0, 0);
+      charred.x.putImageData(charred.img, 0, 0);
+      glow.x.putImageData(glow.img, 0, 0);
+
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.drawImage(incoming, (W - dw) / 2, (H - dh) / 2, dw, dh);
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.drawImage(mask.c, 0, 0, W, H);
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.drawImage(charred.c, 0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.drawImage(glow.c, 0, 0, W, H);
+      for (var s = 0; s < 6 && edge.length; s++) {
+        var e = edge[Math.random() * edge.length | 0];
+        sparks.push({ x: ((e % GW) + 0.5) / GW * W, y: ((e / GW | 0) + 0.5) / GH * H, vx: (Math.random() - 0.5) * 2.4, vy: -0.6 - Math.random() * 1.8, life: 1, r: 1 + Math.random() * 2.4 });
+      }
+      drawSparks();
+
+      if (p < 1) requestAnimationFrame(frame);
+      else { finish(); fadeSparks(); }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function drawSparks() {
+    ctx.globalCompositeOperation = 'lighter';
+    for (var i = sparks.length - 1; i >= 0; i--) {
+      var s = sparks[i];
+      s.x += s.vx; s.y += s.vy; s.vy -= 0.02; s.life -= 0.02;
+      if (s.life <= 0) { sparks.splice(i, 1); continue; }
+      ctx.fillStyle = 'rgba(255,' + (120 + (s.life * 90 | 0)) + ',50,' + s.life + ')';
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r * s.life, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function fadeSparks() {
+    if (fxRunning) return;
+    fxRunning = true;
+    (function tick() {
+      if (busy) { fxRunning = false; return; }
+      ctx.clearRect(0, 0, fx.width, fx.height);
+      drawSparks();
+      if (sparks.length) requestAnimationFrame(tick);
+      else fxRunning = false;
+    })();
+  }
+
+  lb.querySelector('.lb-prev').addEventListener('click', function () { go(-1); });
+  lb.querySelector('.lb-next').addEventListener('click', function () { go(1); });
+  lb.querySelector('.lb-close').addEventListener('click', function () { lb.close(); });
+  lb.addEventListener('click', function (ev) { if (ev.target === lb) lb.close(); });
+  lb.addEventListener('keydown', function (ev) {
+    if (ev.key === 'ArrowRight') go(1);
+    else if (ev.key === 'ArrowLeft') go(-1);
+  });
+  var downX = null;
+  stage.addEventListener('pointerdown', function (ev) { downX = ev.clientX; });
+  stage.addEventListener('pointerup', function (ev) {
+    if (downX === null) return;
+    var dx = ev.clientX - downX; downX = null;
+    if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+  });
 })();
 </script>
 </body>
