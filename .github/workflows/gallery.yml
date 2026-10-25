@@ -1,0 +1,30 @@
+name: Gallery
+
+on:
+  push:
+    branches: [main]
+    paths: ['gallery/**', 'scripts/build-gallery.mjs']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run gallery
+      # Commits made with GITHUB_TOKEN don't trigger workflows, so this can't loop.
+      - run: |
+          git add gallery
+          git diff --cached --quiet && exit 0
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898283+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'chore(gallery): regenerate thumbnails and manifest'
+          git push
