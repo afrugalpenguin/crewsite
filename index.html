@@ -11,7 +11,7 @@
 </script>
 <script defer src="/_vercel/insights/script.js"></script>
 <style>
-/* Layout: centred full-bleed hero with the crest and a smoke canvas, then a two-stone band, then the creed. Dark-only by design. */
+/* Layout: centred full-bleed hero with the crest and a smoke canvas, then a three-stone band, then the creed. Dark-only by design. */
 :root {
   --bg: #090707;
   --bg-2: #120c0c;
@@ -86,7 +86,7 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
 
 /* Stones */
 .stones { border-bottom: 1px solid var(--rule); background: var(--bg-2); }
-.stones .inner { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 760px; }
+.stones .inner { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 900px; }
 .stone { padding: 34px 28px 36px; border-right: 1px solid var(--rule); min-width: 0; position: relative; text-align: center; transition: background .25s; }
 .stone:last-child { border-right: 0; }
 .stone:hover { background: var(--iron); }
@@ -96,6 +96,7 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
 .stone h2 { font-family: var(--font-display); font-weight: 700; font-size: 24px; line-height: 1; color: var(--fg); }
 .stone p { margin: 10px 0 0; color: var(--fg-2); font-size: 16px; }
 .stone .sub { color: var(--fg-3); font-size: 14px; margin-top: 4px; }
+.stone .btn { margin-top: 16px; }
 
 /* Creed */
 .creed .inner { padding-block: 72px 80px; max-width: 760px; text-align: center; }
@@ -165,6 +166,12 @@ h1, h2, h3 { text-wrap: balance; margin: 0; }
       <h2>Raid nights</h2>
       <p>Times to be announced.</p>
       <div class="sub">Check Discord for the current schedule</div>
+    </div>
+    <div class="stone" id="youtube">
+      <div class="label">YouTube</div>
+      <h2>Watch the crew</h2>
+      <p>Kills, wipes and everything in between.</p>
+      <a class="btn primary" href="https://www.youtube.com/channel/UCdEJDgxuUdNJmQz6vMUcsFA" target="_blank" rel="noopener">Watch on YouTube</a>
     </div>
     <div class="stone" id="join">
       <div class="label">Join</div>
