@@ -13,5 +13,6 @@ window.GALLERY = [
   "WoWScrnShot_021322_231007.jpg",
   "WoWScrnShot_061222_225222.jpg",
   "image.png",
-  "MC3-PvP.jpg"
+  "MC3-PvP.jpg",
+  "RagnarosKill.jpg"
 ];
