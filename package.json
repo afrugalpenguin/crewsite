@@ -2,9 +2,15 @@
   "name": "crewsite",
   "private": true,
   "scripts": {
-    "gallery": "node scripts/build-gallery.mjs"
+    "gallery": "node scripts/build-gallery.mjs",
+    "build:analytics": "node scripts/build-analytics.mjs",
+    "build": "npm run build:analytics && npm run gallery"
   },
   "devDependencies": {
+    "esbuild": "^0.28.2",
     "sharp": "^0.35.5"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
   }
 }
